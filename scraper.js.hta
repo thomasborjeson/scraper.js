@@ -1,0 +1,79 @@
+<!-- Pure Javascript Web Scraper -->
+
+<!-- This is a simple demo that may be used as a template for more advanced solution -->
+<!-- The used iframe concept will only work for web pages that accept being displayed within a frame -->
+<!-- (reference: framekiller scripts, X-Frame-Option) -->
+
+<!-- 2013 Thomas Börjeson -->
+
+<html>
+<head>
+	<title>scraper.js</title>
+</head>
+<body>
+
+	Search: <input type="text" name="input" id= "input" size="50">
+
+	<button id="goBtn" onclick="search()">Go</button> <br>
+
+	<!-- Set the iframe application attribute to true, which means trusted content -->
+
+	<iframe src="" application="yes" id="ifrm" style="width:100%;height:200px" onload="notify()"></iframe>
+	
+	<div id="output">  </div>
+
+<script language="jscript">
+
+function search() 
+{
+	var s = input.value;
+
+	for (var i= 0; i < s.length; i++)
+	{
+		if ( s.substring(i,i+1) === " ")
+		{
+			s.replace(i, "+")
+		}
+	}
+
+	input.value = "http://www.bing.com/search?q=" + s
+
+	document.all.ifrm.src= input.value;
+}
+
+function notify()
+{
+ 	var ifrm = document.all.ifrm; 
+
+	var doc = ifrm.contentDocument ? ifrm.contentDocument : ifrm.contentWindow.document;
+
+	var s;
+
+	s = doc.getElementsByTagName("title")[0].innerHTML + ":<br><br>";
+
+	var A = doc.getElementsByTagName("a");
+
+	for (var i=0; i < A.length; i++)
+	{
+		var link = A[i].href;
+
+		// link filter...
+
+		if ((link.substring(0,4) == "http") && 
+		    (link.indexOf("bing") == -1) && 
+                    (link.indexOf("msn.com") == -1) &&
+		    (link.indexOf("ms.ciao") == -1) &&
+		    (link.indexOf("go.microsoft") == -1))
+		{
+			s += A[i].href + "<br>";
+		}
+	}
+	
+
+	document.getElementById("output").innerHTML = s;
+}
+
+</script>
+
+</body>
+</html>
